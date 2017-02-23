@@ -86,3 +86,36 @@ Complex Example
 See comments for details.
 
 
+Gathering Data
+==============
+
+Example script for gathering data:
+
+```shell
+
+for t in 1 2; do
+   for shared in shared private; do
+       for f in 1 2; do
+           if [ $shared = 'shared' ]; then
+       	      S=-S
+           else
+              S=
+           fi
+           ./time_GSPS.exe $shared-rt2-tc$t-MB$f -tc $t -rt 2 2>/dev/null;
+       done;
+   done;
+done
+```
+
+produces (after you grep out the redundant headers):
+
+| Bench     | Config	           | RunTime	     | Operations|  Threads | opsPerSec    |
+|-----------|----------------------|-----------------|-----------|----------|--------------|
+|	gsps|	shared-rt2-tc1-MB1 |	2.00153      |	108366346|	1   |	5.41418e+07|
+|	gsps|	shared-rt2-tc1-MB2 |	2.00518      |	114043969|	1   |	5.68746e+07|
+|	gsps|	private-rt2-tc1-MB1|	2.00402      |	111658453|	1   |	5.57172e+07|
+|	gsps|	private-rt2-tc1-MB2|	2.00512      |	112801334|	1   |	5.62565e+07|
+|	gsps|	shared-rt2-tc2-MB1 |	2.0018       |	230413514|	2   |	1.15103e+08|
+|	gsps|	shared-rt2-tc2-MB2 |	2.00495      |	231343536|	2   |	1.15386e+08|
+|	gsps|	private-rt2-tc2-MB1|	2.00349      |	224922118|	2   |	1.12265e+08|
+|	gsps|	private-rt2-tc2-MB2|	2.001        |	228133489|	2   |	1.1401e+0  |
