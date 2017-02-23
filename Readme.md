@@ -121,3 +121,7 @@ produces (after you grep out the redundant headers):
 |	gsps|	shared-rt2-tc2-MB2 |	2.00495      |	231343536|	2   |	1.15386e+08|
 |	gsps|	private-rt2-tc2-MB1|	2.00349      |	224922118|	2   |	1.12265e+08|
 |	gsps|	private-rt2-tc2-MB2|	2.001        |	228133489|	2   |	1.1401e+0  |
+
+
+Now go dump it into a pivot table (http://www.excel-easy.com/data-analysis/pivot-tables.html) and draw some graphs!
+
