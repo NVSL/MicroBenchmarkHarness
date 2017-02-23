@@ -90,10 +90,6 @@ namespace nvsl {
 			 
 		    } else if (!strcmp(argv[i], "-file"))
 			 _file = argv[++i];
-		    else if (!strcmp(argv[i], "-reload"))
-			 _reload = true;
-		    else if (!strcmp(argv[i], "-create"))
-			 _create = true;
 		    else if (!strcmp(argv[i], "-hang"))
 		         _hang = true;
 		    else if (!strcmp(argv[i], "-nondet"))
@@ -107,12 +103,6 @@ namespace nvsl {
 	       }
 	       
 
-	       if (_footPrintB == 0) {
-		    std::cerr << "Footprint must be specified\n";
-		    std::cerr << argv[0] << _usage << "\n";
-		    exit(-1);
-	       }
-
 	       if (!durationSet) {
 		    std::cerr << "-rt or -max must be specified\n";
 		    std::cerr << argv[0] << _usage << "\n";
@@ -125,11 +115,6 @@ namespace nvsl {
 		    exit(-1);
 	       }
 
-	       if (_create && _reload) {
-		    std::cerr << "Either -create or -reload may be specified, but not both\n";
-		    std::cerr << argv[0] << _usage << "\n";
-		    exit(-1);
-	       }
 
 	       _operationsPerThread  = _operationCount/_threadCount;
 	       _startTime = GetNow();
@@ -169,9 +154,7 @@ namespace nvsl {
 	  inline static void CompletedOperation() {nvsl::atomic_increment(&_operationsCompleted);}
 	  inline static unsigned long long GetCompletedOperations() {return _operationsCompleted;}
 	  inline static void CompletedOperations(long long numOps) {nvsl::atomic_exchange_and_add(&_operationsCompleted, numOps);}
-	  inline static bool GetReloadFlag() {return _reload; }
-	  inline static bool GetCreateFlag() {return _create; }
-	  inline static const std::string & GetHeapFileName()  {return _file;}
+	  inline static const std::string & GetFileName()  {return _file;}
 	  inline static double GetElapsedRunTime() {return _stopTime - _startTime;}
 
 
@@ -348,7 +331,7 @@ namespace nvsl {
      typedef _MicroBenchmarkHarness<int> MicroBenchmarkHarness;
 
      template<class C> 
-     size_t _MicroBenchmarkHarness<C>::_footPrintB = 0;
+     size_t _MicroBenchmarkHarness<C>::_footPrintB = 1*1024*1024;
      template<class C> 
      double _MicroBenchmarkHarness<C>::_runTimeSeconds = 0;
      template<class C> 

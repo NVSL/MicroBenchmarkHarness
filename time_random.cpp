@@ -7,11 +7,12 @@
 // variables it uses will be shared across all the threads.
 
 void op(int id, void *arg, uint64_t & seed) {
-    RandLFSR(&seed);
+     RandLFSR(&seed);
 }
 
 int main(int argc, char *argv[]) {
-     nvsl::MicroBenchmarkHarness::Init("test", argc, argv);
+     // The first argument is an identifier for this micro benchmark.  This will be the first field of the output.
+     nvsl::MicroBenchmarkHarness::Init("RandLFSR", argc, argv);
 
      // If you need parse command line args, do it here.
 
