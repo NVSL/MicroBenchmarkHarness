@@ -5,7 +5,7 @@ Purpose:  A harness meant for measuring the performance of simple operations (i.
 
 Goals:
 
-1.  Uniform output format to make graphing easy.
+1.  Uniform output format to make graphing easy (e.g., using Excel pivot tables).
 2.  Accurate measurements of very fast operations.
 3.  A variety of useful general-purpose options.
 4.  Handle some tricky stuff like signals and threads nicely.
