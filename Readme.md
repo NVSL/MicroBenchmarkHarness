@@ -101,7 +101,7 @@ for t in 1 2; do
            else
               S=
            fi
-           ./time_GSPS.exe $shared-rt2-tc$t-MB$f -tc $t -rt 2 2>/dev/null;
+           ./time_GSPS.exe $shared-rt2-tc$t-MB$f $S -tc $t -rt 2 2>/dev/null;
        done;
    done;
 done
