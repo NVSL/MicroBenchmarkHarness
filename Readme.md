@@ -52,6 +52,26 @@ RandLFSR()
 
 `RandLFSR()` takes a pointer to it's 'seed' as an argument, sets it to the next random value and returns the value.  `MicroBechmrakHarness()` passes the current thread's seed as an argument to the FUT.
 
+Output
+======
+
+One of the most useful features of `MicroBenchmarkHarness` is that it produces output that easy to graph.  In particular, it ensures that the output from all our microbenchmarks is in the same format so the same graphing scripts work on all of it.  (I'm not kidding, this a big reason that we wrote it).
+
+Here's an example
+
+| Bench   | Config	| RunTime	  | Operations	|  Threads | opsPerSec  |
+|---------|-------------|-----------------|-------------|----------|------------|
+| RandLFSR|	1MB	| 2.00364	  | 611335565	| 1	   | 3.05112e+08|
+
+
+* `Bench` is the name of the benchmarks.  It comes from the first argument to `Init()`
+* `Config` is the first command line argument to the benchmark executable.  It is useful to include descriptive information about this run of the benchmark. In this case it tells us that it ran with a 1MB footprint.  This string should unique all the runs of this microbenchmark an the string should be structured so it's easy to grep/search for what you want.
+* `Runtime` is the runtime in seconds.
+* `Operations` is the total numbers of times the FUT ran.
+* `Threads` is the number of threads
+* `OpsPerSec` is the number of times FUT executed per second across all threads.
+
+
 
 Simple Example
 ==============

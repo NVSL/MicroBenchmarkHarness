@@ -164,7 +164,7 @@ namespace nvsl {
 	       if (_stopTime == 0) {
 		    StopTiming();
 	       }
-	       out << "Sys\tName\tRunTime\tOperations\tThreads\topsPerSec\n";
+	       out << "Bench\tConfig\tRunTime\tOperations\tThreads\topsPerSec\n";
 	       out <<     _system 
 		   << "\t" << _name 
 		   << "\t" << _stopTime - _startTime 
