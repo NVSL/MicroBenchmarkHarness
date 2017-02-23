@@ -35,6 +35,9 @@ Standard Command Line Arguments
 * `-file <backing file>`:  File or directory to run the benchmark on/in/about.  Interpretation is benchmark-specific.  Defaults to "".
 * `--help`:  Get some help
 
+For instance, if you were testing performance of memory operations in an mmap'ed file, you could pass the filename with `-file` and specify the amount of the file to work on using `-foot`.
+
+
 Compiling
 =========
 
@@ -84,7 +87,6 @@ Complex Example
 `time_GSPS.cpp` is a complex example that shows how to add your own command line options, create threads yourself, and interact with then MicroBenchmarkHarness singleton object.
 
 See comments for details.
-
 
 Gathering Data
 ==============
