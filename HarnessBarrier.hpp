@@ -34,23 +34,24 @@ namespace nvsl {
      };
 
 }
-#define PTHREAD_BARRIER_SERIAL_THREAD 1010
 
-typedef nvsl::Barrier * pthread_barrier_t;
+#undef PTHREAD_BARRIER_SERIAL_THREAD
+#define PTHREAD_BARRIER_SERIAL_THREAD 1010
+typedef nvsl::Barrier * pthread_barrier;
      
-inline static int pthread_barrier_init(pthread_barrier_t * b, void *foo, int count) {
+inline static int pthread_barrier_init(pthread_barrier * b, void *foo, int count) {
      *b = new nvsl::Barrier(count);
      assert(foo == NULL);
      return 0;
 }
      
-inline static int pthread_barrier_destroy(pthread_barrier_t *b) {
+inline static int pthread_barrier_destroy(pthread_barrier *b) {
      delete *b;
      b = NULL;
      return 0;
 }
      
-inline static int pthread_barrier_wait(pthread_barrier_t *b) {
+inline static int pthread_barrier_wait(pthread_barrier *b) {
      (*b)->Join();
      return 0;
 }
@@ -60,7 +61,7 @@ inline static int pthread_barrier_wait(pthread_barrier_t *b) {
 #else
 namespace nvsl { 
     class Barrier {
-	  pthread_barrier_t _barrier;
+	  pthread_barrier _barrier;
      public:
 	  Barrier(int count) {
 	       pthread_barrier_init(&_barrier, NULL, count);
@@ -74,5 +75,4 @@ namespace nvsl {
      };
 }
 #endif
-
 #endif

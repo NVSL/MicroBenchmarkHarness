@@ -100,7 +100,7 @@ void * go(void *arg) {
      } else { // running for a fixed number of ops.
 
 	  // Run the number of ops we should run.
-	  for(int i = 0; i < threadOps; i++) {
+	  for(unsigned int i = 0; i < threadOps; i++) {
 	       op(args);
 	  }
 	  // Tell the harness.
@@ -159,7 +159,7 @@ int main (int argc, char *argv[]) {
 	  p->max_index = nvsl::MicroBenchmarkHarness::GetFootPrintBytes()/sizeof(uint64_t);
 	  p->data = new uint64_t[p->max_index];
 	  p->seed = 1;
-	  for(int i = 0; i < thread_count; i++) {
+	  for(unsigned int i = 0; i < thread_count; i++) {
 	       ThreadArgs * t = new ThreadArgs;
 	       t->max_index = p->max_index;
 	       t->data = p->data;
@@ -168,7 +168,7 @@ int main (int argc, char *argv[]) {
 	       argsList.push_back(t);
 	  }
      } else { // no shared, they get their own array.
-	  for(int i = 0; i < thread_count; i++) {
+	  for(unsigned int i = 0; i < thread_count; i++) {
 	       ThreadArgs * t = new ThreadArgs;
 	       t->max_index = nvsl::MicroBenchmarkHarness::GetFootPrintBytes()/sizeof(uint64_t)/thread_count;
 	       t->data = new uint64_t[t->max_index];

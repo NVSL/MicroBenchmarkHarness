@@ -1,18 +1,19 @@
 #ifndef NVTM_HARNESS_INCLUDED
 #define NVTM_HARNESS_INCLUDED
 
-#include<unistd.h>
-#include<string>
-#include<vector>
-#include<iostream>
-#include<pthread.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <cstring>
+#include <vector>
+#include <iostream>
+#include <pthread.h>
 #include <sys/time.h>
 #include <signal.h>
 #include "AtomicOps.hpp"
 #include "HarnessBarrier.hpp"
-#include"FastRand.hpp"
-#include<assert.h>
-#include<list>
+#include "FastRand.hpp"
+#include <assert.h>
+#include <list>
 
 namespace nvsl {
      // Making it a template lets us define everything in this header.
@@ -70,7 +71,7 @@ namespace nvsl {
 	       bool durationSet = false;
 	       int i=2;
 	       while(i < argc) {
-		    if (!strcmp(argv[i], "-tc"))
+		    if (!std::strcmp(argv[i], "-tc"))
 			 _threadCount = atoi(argv[++i]);
 		    else if (!strcmp(argv[i], "-foot"))
 			 _footPrintB = atoll(argv[++i])*1024*1024;
