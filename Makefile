@@ -3,7 +3,7 @@ TEST_SRCS=time_GSPS.cpp	time_random.cpp
 TEST_EXES=$(TEST_SRCS:.cpp=.exe)
 
 %.exe : %.cpp
-	g++ -Wall -O3 -g -I.. -I/usr/local/include/ -DNO_BARRIERS $< -o $@
+	g++ -Wall -O3 -g -I.. -I/usr/local/include/ -lpthread -DNO_BARRIERS $< -o $@
 
 
 .PHONY: default
