@@ -1,9 +1,9 @@
-TEST_SRCS=time_GSPS.cpp	time_random.cpp read.cpp
+TEST_SRCS=time_GSPS.cpp	time_random.cpp file_rd.cpp
 
 TEST_EXES=$(TEST_SRCS:.cpp=.exe)
 
 %.exe : %.cpp
-	g++ -Wall -O3 -g -I.. -I/usr/local/include/ -lpthread -DNO_BARRIERS $< -o $@
+	g++ -Wall -O3 -g -I.. -I/usr/local/include/ -I/root/Akshatha/boost_1_57_0 -lpthread -pthread -DNO_BARRIERS $< -o $@
 
 
 .PHONY: default

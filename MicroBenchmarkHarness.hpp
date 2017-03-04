@@ -192,7 +192,7 @@ namespace nvsl {
 	       // StartTiming() explicitly when the
 	       // timed portion begins.
 	       _startTime = GetNow();
-	       std::cerr << "Timing started\n";
+	       //std::cerr << "Timing started\n";
 	       struct sigaction act;
 	       bzero(&act, sizeof(act));
 	       act.sa_handler = StopSignal;
@@ -210,14 +210,14 @@ namespace nvsl {
 	       // after Init() if there is an
 	       // initialization phase that should not
 	       // be timed.
-	       std::cerr << "Suspending timing\n";
+	       //std::cerr << "Suspending timing\n";
 	       _timingIsSuspended = true;
 	  }
 
 	  static void StopTiming() {  // Call this when the timed portion of
 	       // the program has ended.
 	       _stopTime = GetNow();
-	       std::cerr << "Timing stopped\n";
+	       //std::cerr << "Timing stopped\n";
 	  }
 	  
 	  inline static bool isDone() {  // Check if the program should

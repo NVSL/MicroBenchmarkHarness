@@ -2,7 +2,7 @@
 #include <string>
 #include <stdlib.h>
 #include <malloc.h>
-#include <sys/stat.h> 
+#include <sys/stat.h>
 #include <fcntl.h>
 #include <vector>
 
@@ -26,7 +26,7 @@ int  blockSize  = 4*1024; // 4 KB by default
 // d - directory/file path
 // r - is random read?
 // f - file size
-// b - block size 
+// b - block size
 void ParseOptions(int & argc, char  *argv[])
 {
      int c;
@@ -59,7 +59,7 @@ struct ThreadArgs {
      int id;
      int fd;
      size_t readSize;
-     size_t fileSize; 
+     size_t fileSize;
 };
 
 // Barriers to coordinate execution across threads.  The main goal is to make
@@ -148,7 +148,7 @@ void * go(void *arg) {
 	fptr = &read_backward;
      else
 	fptr = &read_forward;
-     
+
 
      // Wait for the threads to be started.
      startBarrier->Join();
@@ -163,9 +163,9 @@ void * go(void *arg) {
 
      //Go !
      if (threadOps == 0) { // Running for a fixed period of time.
-	  
+
 	  uint64_t c = 0;
-	  // isDone() checks a couple of termination conditions including 
+	  // isDone() checks a couple of termination conditions including
 	  while(!nvsl::MicroBenchmarkHarness::isDone()) {
 	       fptr(args);
 	       c++;
@@ -189,9 +189,9 @@ void * go(void *arg) {
 
 int main (int argc, char *argv[]) {
 
-     
+
      nvsl::MicroBenchmarkHarness::Init("read", argc, argv);
-     
+
      nvsl::MicroBenchmarkHarness::SuspendTiming(); // Stop timing because we
 						   // are going set up some
 						   // stuff we don't want
@@ -207,13 +207,13 @@ int main (int argc, char *argv[]) {
      runBarrier = new nvsl::Barrier(thread_count);
 
      typedef std::vector<ThreadArgs* > ArgsList;
-     
+
      ArgsList argsList;
 
      std::vector<int> fileDesc;
 
      // Each thread will work on it's own file.
-     // Open the file here if we are not interested in measuruing the open 
+     // Open the file here if we are not interested in measuruing the open
      // operation
      for(unsigned int i= 0; i< thread_count; i++) {
 	ThreadArgs * t = new ThreadArgs;
@@ -224,7 +224,7 @@ int main (int argc, char *argv[]) {
 	t->id = i;
 	t->fd  = fd;
 	t->readSize = blockSize;
-	t->fileSize = fileLength;	
+	t->fileSize = fileLength;
 	argsList.push_back(t);
 	fileDesc.push_back(fd);
      }
