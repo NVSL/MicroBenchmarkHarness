@@ -20,6 +20,6 @@ fi
 
 for t in $(seq 1 $n); do
     for i in $(seq 1 $k); do
-        ./file_rd.exe tc$t-size2GB-block4KB -tc $t -max $t
+        ./file_rd.exe tc$t-size2GB-block4KB -tc $t -max $t -r 1
     done;
 done

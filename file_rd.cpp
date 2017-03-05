@@ -19,8 +19,9 @@ namespace patch
 
 std::string filepath = "/mnt/ramdisk/file";
 bool randomRead = false;
-int  fileLength = 1024*1024*1024; // 1GB by default
-int  blockSize  = 4*1024; // 4 KB by default
+uint64_t  bytesPer1GB = 1024*1024*1024; 
+uint64_t  fileLength = 2 * bytesPer1GB; // 1GB by default
+uint64_t  blockSize  = 4 * 1024; // 4 KB by default
 
 // Parse our custom options on the command line.
 // d - directory/file path
@@ -58,8 +59,8 @@ struct ThreadArgs {
      uint64_t seed;
      int id;
      int fd;
-     size_t readSize;
-     size_t fileSize;
+     uint64_t readSize;
+     uint64_t fileSize;
 };
 
 // Barriers to coordinate execution across threads.  The main goal is to make
@@ -84,7 +85,7 @@ long crunch(void *buf, long bufSize) {
 }
 
 void read_forward(ThreadArgs * args) {
-     size_t fileSize, readSize;
+     uint64_t fileSize, readSize;
 
      fileSize = args->fileSize;
      readSize = args->readSize;
@@ -107,7 +108,7 @@ void read_forward(ThreadArgs * args) {
 }
 
 void read_backward(ThreadArgs * args) {
-     size_t fileSize, readSize;
+     uint64_t fileSize, readSize;
 
      fileSize = args->fileSize;
      readSize = args->readSize;
