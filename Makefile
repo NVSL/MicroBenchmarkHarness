@@ -1,4 +1,4 @@
-TEST_SRCS=time_GSPS.cpp	time_random.cpp file_rd.cpp
+TEST_SRCS=time_GSPS.cpp	time_random.cpp file_rd.cpp file_wr.cpp
 
 TEST_EXES=$(TEST_SRCS:.cpp=.exe)
 

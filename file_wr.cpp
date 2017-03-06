@@ -18,14 +18,12 @@ namespace patch
 
 
 std::string filepath = "/mnt/ramdisk/file";
-bool randomRead = false;
 uint64_t  bytesPer1GB = 1024*1024*1024; 
-uint64_t  fileLength = 2 * bytesPer1GB; // 2GB by default
+uint64_t  fileLength = 2 * bytesPer1GB; // 1GB by default
 uint64_t  blockSize  = 4 * 1024; // 4 KB by default
 
 // Parse our custom options on the command line.
 // d - directory/file path
-// r - is random read?
 // f - file size
 // b - block size
 void ParseOptions(int & argc, char  *argv[])
@@ -37,9 +35,6 @@ void ParseOptions(int & argc, char  *argv[])
           case 'd':
                filepath = optarg;
                break;
-          case 'r':
-	       randomRead = true;
-	       break;
 	  case 'f':
 	       fileLength = atoi(optarg);
 	       break;
@@ -59,8 +54,9 @@ struct ThreadArgs {
      uint64_t seed;
      int id;
      int fd;
-     uint64_t readSize;
+     uint64_t writeSize;
      uint64_t fileSize;
+     char *buf;
 };
 
 // Barriers to coordinate execution across threads.  The main goal is to make
@@ -70,69 +66,33 @@ nvsl::Barrier *startBarrier;
 nvsl::Barrier *endBarrier;
 nvsl::Barrier *runBarrier;
 
-long crunch(void *buf, long bufSize) {
-     long sum = 0;
-     register long *start = (long *)buf;
-
-     while(bufSize >= 64) {
-	sum +=  start[0] + start[8] + start[16] + start[24] + start[32] +
-		start[40] + start[48] + start[56];
-	start += 64;
-	bufSize -= 64;
-     }
-
-     return sum;
+void fill_buffer(ThreadArgs * args) {
+     char rbyte = (char)RandLFSR(&args->seed) % args->max_index;
+     char *buf  = args->buf;
+     for (unsigned int i = 0 ; i < args->writeSize ; i++)
+	buf[i] = rbyte;
+     return;
 }
 
-void read_forward(ThreadArgs * args) {
-     uint64_t fileSize, readSize;
+void write_forward(ThreadArgs * args) {
+     uint64_t fileSize, writeSize;
 
      fileSize = args->fileSize;
-     readSize = args->readSize;
+     writeSize = args->writeSize;
 
-     char *buf = (char *)valloc(readSize);
-
-     while (fileSize > 0) {
-	if (readSize > fileSize)
-            readSize = fileSize;
-
-	if (read(args->fd, buf, readSize) <= 0)
-	    break;
-
-        (void)crunch(buf, readSize);
-
-        fileSize -= readSize;
-    }
-
-    free(buf);
-}
-
-void read_backward(ThreadArgs * args) {
-     uint64_t fileSize, readSize;
-
-     fileSize = args->fileSize;
-     readSize = args->readSize;
-
-     char *buf = (char *)valloc(readSize);
+     char *buf = args->buf;
 
      while (fileSize > 0) {
-	if (readSize > fileSize)
-            readSize = fileSize;
+	if (writeSize > fileSize)
+            writeSize = fileSize;
 
-        if (lseek(args->fd, (off_t)(fileSize - readSize), SEEK_SET) <= 0)
+	if (write(args->fd, buf, writeSize) <= 0)
 	    break;
 
-	if (read(args->fd, buf, readSize) <= 0)
-	    break;
-
-        (void)crunch(buf, readSize);
-
-        fileSize -= readSize;
+        fileSize -= writeSize;
     }
 
-    free(buf);
 }
-
 
 // The function each threa runs.  The argument gets passed from StartThread()
 // below.  This is exactly what RunOps() does.
@@ -145,10 +105,7 @@ void * go(void *arg) {
      unsigned int threadOps = nvsl::MicroBenchmarkHarness::GetOperationCountPerThread();
 
      void (*fptr)(ThreadArgs *);
-     if (randomRead)
-	fptr = &read_backward;
-     else
-	fptr = &read_forward;
+     fptr = &write_forward;
 
 
      // Wait for the threads to be started.
@@ -191,7 +148,7 @@ void * go(void *arg) {
 int main (int argc, char *argv[]) {
 
 
-     nvsl::MicroBenchmarkHarness::Init("read", argc, argv);
+     nvsl::MicroBenchmarkHarness::Init("write", argc, argv);
 
      nvsl::MicroBenchmarkHarness::SuspendTiming(); // Stop timing because we
 						   // are going set up some
@@ -219,13 +176,16 @@ int main (int argc, char *argv[]) {
      for(unsigned int i= 0; i< thread_count; i++) {
 	ThreadArgs * t = new ThreadArgs;
 	std::string fileName = filepath + patch::to_string(i+1);
-	int fd = open(fileName.c_str(), O_RDONLY);
-	t->max_index = nvsl::MicroBenchmarkHarness::GetFootPrintBytes()/sizeof(uint64_t)/thread_count;
+	int fd = open(fileName.c_str(), O_CREAT | O_WRONLY, 0600);
+	char *buf = (char *)valloc(blockSize);
+	t->max_index = 255;
 	t->seed = i;
 	t->id = i;
 	t->fd  = fd;
-	t->readSize = blockSize;
+	t->writeSize = blockSize;
 	t->fileSize = fileLength;
+	t->buf = buf;
+	fill_buffer(t);
 	argsList.push_back(t);
 	fileDesc.push_back(fd);
      }
@@ -241,6 +201,9 @@ int main (int argc, char *argv[]) {
 
      for (unsigned int i = 0; i < fileDesc.size(); i++)
 	close(fileDesc[i]);
+
+     for (unsigned int i = 0; i < argsList.size(); i++)
+	free(argsList[i]->buf);
 
      return 0;
 }
