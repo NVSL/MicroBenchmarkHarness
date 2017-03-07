@@ -30,22 +30,22 @@ void ParseOptions(int & argc, char  *argv[])
 {
      int c;
      /* process arguments */
-     while ((c = getopt(argc, argv, "drfb")) != -1) {
+     while ((c = getopt(argc, argv, "d:f:b:")) != -1) {
           switch (c) {
-          case 'd':
-               filepath = optarg;
-               break;
+	  case 'b':
+	       blockSize = atoi(optarg);
+	       break;
 	  case 'f':
 	       fileLength = atoi(optarg);
 	       break;
-	  case 'b':
-	       blockSize = atoi(optarg);
+          case 'd':
+               filepath = optarg;
+               break;
           default:
                fprintf(stderr, "Illegal argument \"%c\"\n", c);
                exit(EXIT_FAILURE);
           }
      }
-
 }
 
 // Little struct with the state our benchmark needs in each thread.

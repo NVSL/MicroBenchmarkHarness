@@ -32,7 +32,7 @@ void ParseOptions(int & argc, char  *argv[])
 {
      int c;
      /* process arguments */
-     while ((c = getopt(argc, argv, "drfb")) != -1) {
+     while ((c = getopt(argc, argv, "d:rf:b:")) != -1) {
           switch (c) {
           case 'd':
                filepath = optarg;
@@ -45,6 +45,7 @@ void ParseOptions(int & argc, char  *argv[])
 	       break;
 	  case 'b':
 	       blockSize = atoi(optarg);
+	       break;
           default:
                fprintf(stderr, "Illegal argument \"%c\"\n", c);
                exit(EXIT_FAILURE);
