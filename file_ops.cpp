@@ -174,7 +174,7 @@ void * go(void *arg) {
 int main (int argc, char *argv[]) {
 
 
-     nvsl::MicroBenchmarkHarness::Init("write", argc, argv);
+     nvsl::MicroBenchmarkHarness::Init("fileOps", argc, argv);
 
      nvsl::MicroBenchmarkHarness::SuspendTiming(); // Stop timing because we
 						   // are going set up some
@@ -201,7 +201,6 @@ int main (int argc, char *argv[]) {
      // operation
      int last_used = 0;
 
-     std::cout << "Thread count is " <<  thread_count << "\n";
      for(unsigned int i= 0; i< thread_count; i++) {
 	ThreadArgs * t = new ThreadArgs;
 	char *buf = (char *)valloc(pageSize);
@@ -217,7 +216,6 @@ int main (int argc, char *argv[]) {
 	fill_buffer(t);
 	argsList.push_back(t);
 	last_used += numFiles;
-	std::cout << "Thread " << i << " is using " << t->start_index << " to " << t->end_index  << std::endl;
      }
 
      for(unsigned int i= 0; i< thread_count; i++) {
