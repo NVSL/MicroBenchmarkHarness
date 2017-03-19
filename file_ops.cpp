@@ -22,10 +22,10 @@ enum file_operations {
     renameOp /* 2 */
 };
 
-std::string filepath = "/mnt/ramdisk/file";
+std::string filepath = "/mnt/ramdisk/";
 int pageSize = 4096;
 int numFiles = 1;
-std::string newFilePath = "/mnt/ramdisk/f";
+std::string newFilePath = "/mnt/ramdisk/";
 file_operations fileOp  = createOp;
 
 // Parse our custom options on the command line.
@@ -209,8 +209,8 @@ int main (int argc, char *argv[]) {
 	t->id = i;
 	t->start_index = (last_used) + 1;
 	t->end_index   = last_used + numFiles;
-	t->fileName    = filepath;
-	t->newFileName = newFilePath;	
+	t->fileName    = filepath + "dir" + patch::to_string(i+1) + "/file";
+	t->newFileName = newFilePath + "dir" + patch::to_string(i+1) + "/f";
 	t->blockSize = pageSize;
 	t->buf = buf;
 	fill_buffer(t);
