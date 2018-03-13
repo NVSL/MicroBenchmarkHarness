@@ -9,6 +9,11 @@ for TC in 1 2 4 8 16 32 64; do
         for G in 64 128 256 512 1024 2048 4096 8192; do
             rm -rf $HEAP_PATH
             ./dax_load.exe $TC-$M-$G -tc $TC -footMB $FOOT -rt $RUN_TIME -file $HEAP_PATH -m $M -g $G
+
+            for SM in 'no-barrier' 'barrier' 'flush' 'nstore-no-barrier' 'nstore-barrier'; do
+                rm -rf $HEAP_PATH
+                ./dax_store.exe $TC-$M-$G-$SM -tc $TC -footMB $FOOT -rt $RUN_TIME -file $HEAP_PATH -m $M -g $G -s $SM
+            done
         done
     done
 done
