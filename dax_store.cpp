@@ -195,6 +195,17 @@ int main(int argc, char **argv) {
         barrierPtr = barrier_flush;
     }
 
+    /*
+     * Preventing back contention
+     * The issue is concurrent requests from different threads all going to the same
+     * memory bank. This would results in poor sequential throughput for high thread
+     * counts.
+     * We set a different start offset for each worker thread to make sure they write
+     * to different regions of persistent memory.
+     */
+    size_t sectionSize = nvHeapLen / threadCount;
+    assert(sectionSize % CACHE_LINE_WIDTH == 0);
+
     // Prepare configurations
     vector<ThreadArgs *> threadArgs;
     for (unsigned int i = 0; i < threadCount; i++) {
@@ -206,7 +217,7 @@ int main(int argc, char **argv) {
         t->buffer = (uint64_t *)malloc(accessSize);
         t->memcpyPtr = memcpyPtr;
         t->barrierPtr = barrierPtr;
-        t->nextBlockToWrite = 0;
+        t->nextBlockToWrite = i * sectionSize;
         t->totalBlocks = nvMapLen / accessSize;
         threadArgs.push_back(t);
     }
