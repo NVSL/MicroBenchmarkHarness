@@ -88,6 +88,25 @@ void barrier_flush(void *addr, size_t size) {
     pmem_persist(addr, size);
 }
 
+void *fast_memcpy(void *dst, const void *src, size_t size) {
+    uint64_t *dst_ptr = (uint64_t *)dst;
+    uint64_t *src_ptr = (uint64_t *)src;
+    size_t total_blocks = (size >> 3); // 64-bit blocks
+
+    for (size_t offset = 0; offset < total_blocks; offset += 8) {
+        dst_ptr[offset] = src_ptr[offset];
+        dst_ptr[offset + 1] = src_ptr[offset + 1];
+        dst_ptr[offset + 2] = src_ptr[offset + 2];
+        dst_ptr[offset + 3] = src_ptr[offset + 3];
+        dst_ptr[offset + 4] = src_ptr[offset + 4];
+        dst_ptr[offset + 5] = src_ptr[offset + 5];
+        dst_ptr[offset + 6] = src_ptr[offset + 6];
+        dst_ptr[offset + 7] = src_ptr[offset + 7];
+    }
+
+    return dst;
+}
+
 class ThreadArgs {
 public:
     unsigned int threadID;
@@ -183,7 +202,7 @@ int main(int argc, char **argv) {
     endBarrier = new nvsl::Barrier(threadCount);
     runBarrier = new nvsl::Barrier(threadCount);
 
-    void *(*memcpyPtr)(void *, const void *, size_t) = memcpy;
+    void *(*memcpyPtr)(void *, const void *, size_t) = fast_memcpy;
     if (storeMode == NonTempStoreNoBarrier || storeMode == NonTempStoreAndBarrier) {
         memcpyPtr = pmem_memcpy_nodrain;
     }
